@@ -19,8 +19,8 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/tickets" element={<TicketList />} />
                 <Route path="/create" element={<CreateTicket />} />
-                <Route path="/edit/:id" element={<EditTicket />} /> {/* ✅ nouvelle route */}
-            </Routes>
+                <Route path="/edit/:id" element={<EditTicket />} /> {/* ← cette ligne est essentielle */}
+</Routes>
         </Router>
     );
 };

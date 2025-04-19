@@ -1,64 +1,99 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { updateTicket, getTickets } from '../services/api';
-import './CreateTicket.css'; // On peut réutiliser le CSS
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getTickets, updateTicket } from '../services/api';
+import '/src/style.css';
 
 const EditTicket = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [ticket, setTicket] = useState(null);
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTicket = async () => {
-      const tickets = await getTickets();
-      const found = tickets.find((t) => t.id == id);
-      setTicket(found);
+    const [ticket, setTicket] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTicket = async () => {
+            try {
+                const allTickets = await getTickets();
+                const foundTicket = allTickets.find(t => t._id === id);
+                if (foundTicket) {
+                    setTicket(foundTicket);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error('Erreur de chargement :', error);
+                setLoading(false);
+            }
+        };
+
+        fetchTicket();
+    }, [id]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setTicket({ ...ticket, [name]: value });
     };
-    fetchTicket();
-  }, [id]);
 
-  const handleChange = (e) => {
-    setTicket({ ...ticket, [e.target.name]: e.target.value });
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await updateTicket(ticket._id, ticket);
+            navigate('/tickets');
+        } catch (error) {
+            console.error('Erreur de mise à jour :', error);
+        }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await updateTicket(id, ticket);
-    navigate('/tickets');
-  };
+    if (loading) return <p>Chargement...</p>;
+    if (!ticket) return <p>Ticket introuvable</p>;
 
-  if (!ticket) return <div>Chargement...</div>;
+    return (
+        <div className="container">
+            <h1>Modifier le Ticket</h1>
+            <form className="form" onSubmit={handleSubmit}>
+                <label>Titre :</label>
+                <input
+                    type="text"
+                    name="title"
+                    value={ticket.title}
+                    onChange={handleChange}
+                    required
+                />
 
-  return (
-    <div className="form-container">
-      <h2>Modifier le ticket</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          name="title"
-          value={ticket.title}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="description"
-          value={ticket.description}
-          onChange={handleChange}
-          required
-        />
-        <select name="priority" value={ticket.priority} onChange={handleChange}>
-          <option value="Faible">Faible</option>
-          <option value="Moyenne">Moyenne</option>
-          <option value="Haute">Haute</option>
-        </select>
-        <select name="status" value={ticket.status} onChange={handleChange}>
-          <option value="Ouvert">Ouvert</option>
-          <option value="En cours">En cours</option>
-          <option value="Terminé">Terminé</option>
-        </select>
-        <button type="submit">Mettre à jour</button>
-      </form>
-    </div>
-  );
+                <label>Description :</label>
+                <textarea
+                    name="description"
+                    value={ticket.description}
+                    onChange={handleChange}
+                    required
+                />
+
+                <label>Priorité :</label>
+                <select
+                    name="priority"
+                    value={ticket.priority}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="basse">Basse</option>
+                    <option value="moyenne">Moyenne</option>
+                    <option value="haute">Haute</option>
+                </select>
+
+                <label>Statut :</label>
+                <select
+                    name="status"
+                    value={ticket.status}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="open">Ouvert</option>
+                    <option value="closed">Fermé</option>
+                </select>
+
+                <button className="button" type="submit">Enregistrer</button>
+            </form>
+        </div>
+    );
 };
 
 export default EditTicket;

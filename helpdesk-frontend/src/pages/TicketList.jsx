@@ -16,10 +16,14 @@ const TicketList = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        await deleteTicket(id);
-        setTickets(tickets.filter(ticket => ticket.id !== id));
+        try {
+            await deleteTicket(id);
+            setTickets(prev => prev.filter(ticket => ticket._id !== id));
+        } catch (error) {
+            console.error("Erreur de suppression :", error);
+        }
     };
-
+    
     return (
         <div className="container">
             <h1>Liste des Tickets</h1>
@@ -31,12 +35,20 @@ const TicketList = () => {
             ) : (
                 <ul>
                     {tickets.map(ticket => (
-                        <li key={ticket.id} className="ticket">
+                        <li key={ticket._id} className="ticket">
                             <h2>{ticket.title}</h2>
                             <p>{ticket.description}</p>
                             <p>Priorité : {ticket.priority}</p>
-                            <button onClick={() => navigate(`/edit/${ticket.id}`)}>Modifier</button>
-                            <button className="button" onClick={() => handleDelete(ticket.id)}>Supprimer</button>
+                            <p>Statut : {ticket.status === 'closed' ? 'Fermé' : 'Ouvert'}</p>
+                            <button className="ticket-button" onClick={() => navigate(`/edit/${ticket._id}`)}>
+                                Modifier
+                            </button>
+
+                            <button
+                                className="ticket-button"
+                                onClick={() => handleDelete(ticket._id)}>
+                                Supprimer
+                            </button>
                         </li>
                     ))}
                 </ul>
