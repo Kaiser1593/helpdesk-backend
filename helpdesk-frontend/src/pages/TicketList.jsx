@@ -35,6 +35,7 @@ const TicketList = () => {
                             <h2>{ticket.title}</h2>
                             <p>{ticket.description}</p>
                             <p>Priorité : {ticket.priority}</p>
+                            <button onClick={() => navigate(`/edit/${ticket.id}`)}>Modifier</button>
                             <button className="button" onClick={() => handleDelete(ticket.id)}>Supprimer</button>
                         </li>
                     ))}
