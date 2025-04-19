@@ -1,0 +1,85 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../db'); // 🔥 Assure-toi que ta connexion MySQL est bien importée !
+
+// ✅ Route pour ajouter un ticket
+router.post('/tickets', (req, res) => {
+    console.log("📢 Requête reçue :", req.body); // Debug
+
+    const { title, description, priority } = req.body;
+    if (!title || !description || !priority) {
+        return res.status(400).json({ error: "Tous les champs sont requis" });
+    }
+
+    const query = "INSERT INTO tickets (title, description, priority) VALUES (?, ?, ?)";
+    db.query(query, [title, description, priority], (err, result) => {
+        if (err) {
+            console.error("❌ Erreur MySQL :", err);
+            return res.status(500).json({ error: err.message });
+        }
+        console.log("✅ Ticket ajouté :", result);
+        res.status(201).json({ id: result.insertId, title, description, priority });
+    });
+});
+
+module.exports = router;
+
+// Lire tous les tickets
+router.get('/tickets', (req, res) => {
+    db.query("SELECT * FROM tickets", (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        console.log("📢 Tickets récupérés :", results); // 🔍 Debug dans la console
+        res.json(results); // ✅ Renvoie bien les données
+    });
+});
+
+
+// Lire un ticket spécifique
+router.get('/tickets/:id', (req, res) => {
+    const ticketId = req.params.id;
+    const query = 'SELECT * FROM tickets WHERE id = ?';
+    db.query(query, [ticketId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Ticket non trouvé' });
+        }
+        res.status(200).json(results[0]);
+    });
+});
+
+// Mettre à jour un ticket
+router.put('/tickets/:id', (req, res) => {
+    const ticketId = req.params.id;
+    const { title, description, priority } = req.body;
+    const query = 'UPDATE tickets SET title = ?, description = ?, priority = ? WHERE id = ?';
+    db.query(query, [title, description, priority, ticketId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Ticket non trouvé' });
+        }
+        res.status(200).json({ message: 'Ticket mis à jour avec succès' });
+    });
+});
+
+// Supprimer un ticket
+router.delete('/tickets/:id', (req, res) => {
+    const ticketId = req.params.id;
+    const query = 'DELETE FROM tickets WHERE id = ?';
+    db.query(query, [ticketId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Ticket non trouvé' });
+        }
+        res.status(200).json({ message: 'Ticket supprimé avec succès' });
+    });
+});
+
+module.exports = router;
