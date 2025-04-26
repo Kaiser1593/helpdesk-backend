@@ -1,46 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // 🔥 Assure-toi que ta connexion MySQL est bien importée !
+const db = require('../db');
 
-// ✅ Route pour ajouter un ticket
+// ✅ Ajouter un ticket
 router.post('/tickets', (req, res) => {
-    console.log("📢 Requête reçue :", req.body); // Debug
-
-    const { title, description, priority } = req.body;
+    const { title, description, priority, status = 'open' } = req.body;
     if (!title || !description || !priority) {
         return res.status(400).json({ error: "Tous les champs sont requis" });
     }
 
-    const query = "INSERT INTO tickets (title, description, priority) VALUES (?, ?, ?)";
-    db.query(query, [title, description, priority], (err, result) => {
+    const query = "INSERT INTO tickets (title, description, priority, status) VALUES (?, ?, ?, ?)";
+    db.query(query, [title, description, priority, status], (err, result) => {
         if (err) {
             console.error("❌ Erreur MySQL :", err);
             return res.status(500).json({ error: err.message });
         }
-        console.log("✅ Ticket ajouté :", result);
-        res.status(201).json({ id: result.insertId, title, description, priority });
+        res.status(201).json({ id: result.insertId, title, description, priority, status });
     });
 });
 
-module.exports = router;
-
-// Lire tous les tickets
+// ✅ Lire tous les tickets
 router.get('/tickets', (req, res) => {
     db.query("SELECT * FROM tickets", (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        console.log("📢 Tickets récupérés :", results); // 🔍 Debug dans la console
-        res.json(results); // ✅ Renvoie bien les données
+        res.json(results);
     });
 });
 
-
-// Lire un ticket spécifique
+// ✅ Lire un ticket spécifique
 router.get('/tickets/:id', (req, res) => {
     const ticketId = req.params.id;
-    const query = 'SELECT * FROM tickets WHERE id = ?';
-    db.query(query, [ticketId], (err, results) => {
+    db.query('SELECT * FROM tickets WHERE id = ?', [ticketId], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -51,12 +43,16 @@ router.get('/tickets/:id', (req, res) => {
     });
 });
 
-// Mettre à jour un ticket
+// ✅ Mettre à jour un ticket
 router.put('/tickets/:id', (req, res) => {
     const ticketId = req.params.id;
-    const { title, description, priority } = req.body;
-    const query = 'UPDATE tickets SET title = ?, description = ?, priority = ? WHERE id = ?';
-    db.query(query, [title, description, priority, ticketId], (err, result) => {
+    const { title, description, priority, status } = req.body;
+    if (!title || !description || !priority || !status) {
+        return res.status(400).json({ error: "Tous les champs sont requis" });
+    }
+
+    const query = 'UPDATE tickets SET title = ?, description = ?, priority = ?, status = ? WHERE id = ?';
+    db.query(query, [title, description, priority, status, ticketId], (err, result) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -67,11 +63,10 @@ router.put('/tickets/:id', (req, res) => {
     });
 });
 
-// Supprimer un ticket
+// ✅ Supprimer un ticket
 router.delete('/tickets/:id', (req, res) => {
     const ticketId = req.params.id;
-    const query = 'DELETE FROM tickets WHERE id = ?';
-    db.query(query, [ticketId], (err, result) => {
+    db.query('DELETE FROM tickets WHERE id = ?', [ticketId], (err, result) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }

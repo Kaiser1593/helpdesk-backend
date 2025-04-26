@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getTickets, updateTicket } from '../services/api';
+import { getTicketById, updateTicket } from '../services/api';
 import '/src/style.css';
 
 const EditTicket = () => {
@@ -13,14 +13,11 @@ const EditTicket = () => {
     useEffect(() => {
         const fetchTicket = async () => {
             try {
-                const allTickets = await getTickets();
-                const foundTicket = allTickets.find(t => t._id === id);
-                if (foundTicket) {
-                    setTicket(foundTicket);
-                }
-                setLoading(false);
+                const foundTicket = await getTicketById(id);
+                setTicket(foundTicket);
             } catch (error) {
                 console.error('Erreur de chargement :', error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -36,7 +33,7 @@ const EditTicket = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updateTicket(ticket._id, ticket);
+            await updateTicket(ticket.id, ticket);
             navigate('/tickets');
         } catch (error) {
             console.error('Erreur de mise à jour :', error);
@@ -87,6 +84,7 @@ const EditTicket = () => {
                     required
                 >
                     <option value="open">Ouvert</option>
+                    <option value="in progress">En cours</option>
                     <option value="closed">Fermé</option>
                 </select>
 
