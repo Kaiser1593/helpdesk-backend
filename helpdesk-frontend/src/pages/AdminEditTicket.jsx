@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getTicketById, updateTicket } from '../services/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { isAdmin } from '../services/auth';
+import Navbar from '../components/Navbar';
 
 const AdminEditTicket = () => {
   const { id } = useParams();
@@ -34,45 +35,48 @@ const AdminEditTicket = () => {
   if (!ticket) return <p>Chargement...</p>;
 
   return (
-    <div className="form-container">
-      <h2>Modifier le ticket (Admin)</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          value={ticket.title}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="description"
-          value={ticket.description}
-          onChange={handleChange}
-          required
-        />
-        <select
-          name="priority"
-          value={ticket.priority}
-          onChange={handleChange}
-          required
-        >
-          <option value="Faible">Faible</option>
-          <option value="Moyenne">Moyenne</option>
-          <option value="Haute">Haute</option>
-        </select>
-        <select
-          name="status"
-          value={ticket.status}
-          onChange={handleChange}
-          required
-        >
-          <option value="open">Ouvert</option>
-          <option value="in_progress">En cours</option>
-          <option value="closed">Fermé</option>
-        </select>
-        <button type="submit">Enregistrer</button>
-      </form>
-    </div>
+    <>
+      <Navbar />
+      <div className="form-container">
+        <h2>Modifier le ticket (Admin)</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="title"
+            value={ticket.title}
+            onChange={handleChange}
+            required
+          />
+          <textarea
+            name="description"
+            value={ticket.description}
+            onChange={handleChange}
+            required
+          />
+          <select
+            name="priority"
+            value={ticket.priority}
+            onChange={handleChange}
+            required
+          >
+            <option value="Faible">Faible</option>
+            <option value="Moyenne">Moyenne</option>
+            <option value="Haute">Haute</option>
+          </select>
+          <select
+            name="status"
+            value={ticket.status}
+            onChange={handleChange}
+            required
+          >
+            <option value="open">Ouvert</option>
+            <option value="in_progress">En cours</option>
+            <option value="closed">Fermé</option>
+          </select>
+          <button type="submit">Enregistrer</button>
+        </form>
+      </div>
+    </>
   );
 };
 
