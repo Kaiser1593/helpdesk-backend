@@ -3,6 +3,7 @@ import { getTicketById, updateTicket } from '../services/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { isAdmin } from '../services/auth';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const AdminEditTicket = () => {
   const { id } = useParams();
@@ -35,9 +36,10 @@ const AdminEditTicket = () => {
   if (!ticket) return <p>Chargement...</p>;
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar />
-      <div className="form-container">
+
+      <div className="form-container" style={{ flex: 1 }}>
         <h2>Modifier le ticket (Admin)</h2>
         <form onSubmit={handleSubmit}>
           <input
@@ -76,7 +78,9 @@ const AdminEditTicket = () => {
           <button type="submit">Enregistrer</button>
         </form>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getTickets, deleteTicket } from '../services/api';
 import { isAdmin } from '../services/auth';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import '/src/style.css';
 
 const AdminDashboard = () => {
@@ -55,12 +56,12 @@ const AdminDashboard = () => {
   };
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar />
-      <div className="container">
+
+      <div className="container" style={{ flex: 1 }}>
         <h1>Tableau de bord - Admin</h1>
 
-        {/* 🎛️ Filtres */}
         <div style={{ marginBottom: '20px' }}>
           <label style={{ fontWeight: 'bold', marginRight: '10px' }}>Filtrer par statut :</label>
           <select value={filter} onChange={handleFilterChange}>
@@ -101,7 +102,9 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 };
 
