@@ -4,54 +4,67 @@ import { useNavigate } from 'react-router-dom';
 import '/src/style.css';
 
 const TicketList = () => {
-    const [tickets, setTickets] = useState([]);
-    const navigate = useNavigate();
+  const [tickets, setTickets] = useState([]);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchTickets = async () => {
-            const data = await getTickets();
-            setTickets(data);
-        };
-        fetchTickets();
-    }, []);
-
-    const handleDelete = async (id) => {
-        try {
-            await deleteTicket(id);
-            setTickets(prev => prev.filter(ticket => ticket.id !== id));
-        } catch (error) {
-            console.error("Erreur de suppression :", error);
-        }
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const data = await getTickets();
+        setTickets(data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des tickets :", error);
+      }
     };
+    fetchTickets();
+  }, []);
 
-    return (
-        <div className="container">
-            <h1>Liste des Tickets</h1>
-            <button className="button" onClick={() => navigate('/create')}>
-                + Créer un Ticket
-            </button>
-            {tickets.length === 0 ? (
-                <p>Aucun ticket trouvé.</p>
-            ) : (
-                <ul>
-                    {tickets.map(ticket => (
-                        <li key={ticket.id} className="ticket">
-                            <h2>{ticket.title}</h2>
-                            <p>{ticket.description}</p>
-                            <p>Priorité : {ticket.priority}</p>
-                            <p>Statut : {ticket.status === 'closed' ? 'Fermé' : 'Ouvert'}</p>
-                            <button className="ticket-button" onClick={() => navigate(`/edit/${ticket.id}`)}>
-                                Modifier
-                            </button>
-                            <button className="ticket-button" onClick={() => handleDelete(ticket.id)}>
-                                Supprimer
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
+  const handleDelete = async (id) => {
+    try {
+      await deleteTicket(id);
+      setTickets((prev) => prev.filter((ticket) => ticket.id !== id));
+    } catch (error) {
+      console.error("Erreur de suppression :", error);
+    }
+  };
+
+  const formatStatus = (status) => {
+    switch (status) {
+      case 'open': return 'Ouvert';
+      case 'in_progress': return 'En cours';
+      case 'closed': return 'Fermé';
+      default: return '—';
+    }
+  };
+
+  return (
+    <div className="container">
+      <h1>Liste des Tickets</h1>
+      <button className="button" onClick={() => navigate('/create')}>
+        + Créer un Ticket
+      </button>
+      {tickets.length === 0 ? (
+        <p>Aucun ticket trouvé.</p>
+      ) : (
+        <ul>
+          {tickets.map((ticket) => (
+            <li key={ticket.id} className="ticket">
+              <h2>{ticket.title}</h2>
+              <p>{ticket.description}</p>
+              <p>Priorité : {ticket.priority.toLowerCase()}</p>
+              <p>Statut : {formatStatus(ticket.status)}</p>
+              <button className="ticket-button" onClick={() => navigate(`/edit/${ticket.id}`)}>
+                Modifier
+              </button>
+              <button className="ticket-button" onClick={() => handleDelete(ticket.id)}>
+                Supprimer
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default TicketList;

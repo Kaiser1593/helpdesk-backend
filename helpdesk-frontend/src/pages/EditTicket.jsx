@@ -4,78 +4,91 @@ import { useParams, useNavigate } from 'react-router-dom';
 import '/src/style.css';
 
 const EditTicket = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [ticket, setTicket] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [ticket, setTicket] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchTicket = async () => {
-            try {
-                const data = await getTicketById(id);
-                setTicket(data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Erreur lors du chargement du ticket :", error);
-                setLoading(false);
-            }
-        };
-        fetchTicket();
-    }, [id]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTicket(prev => ({ ...prev, [name]: value }));
+  useEffect(() => {
+    const fetchTicket = async () => {
+      try {
+        const data = await getTicketById(id);
+        setTicket(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erreur lors du chargement du ticket :", error);
+        setLoading(false);
+      }
     };
+    fetchTicket();
+  }, [id]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await updateTicket(ticket.id, ticket); // Utilise ticket.id et pas ticket._id !
-            navigate('/tickets');
-        } catch (error) {
-            console.error("Erreur lors de la mise à jour :", error);
-        }
-    };
-    
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTicket((prev) => ({ ...prev, [name]: value }));
+  };
 
-    if (loading) return <p>Chargement...</p>;
-    if (!ticket) return <p>Ticket introuvable</p>;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!ticket.title || !ticket.description || !ticket.priority || !ticket.status) {
+      alert("Tous les champs sont requis.");
+      return;
+    }
+    try {
+      console.log("Envoi des données :", ticket); // debug
+      await updateTicket(ticket.id, ticket);
+      navigate('/tickets');
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour :", error);
+    }
+  };
 
-    return (
-        <div className="container">
-            <h1>Modifier le Ticket</h1>
-            <form className="form" onSubmit={handleSubmit}>
-                <label>Titre :</label>
-                <input type="text" name="title" value={ticket.title} onChange={handleChange} required />
+  if (loading) return <p>Chargement...</p>;
+  if (!ticket) return <p>Ticket introuvable</p>;
 
-                <label>Description :</label>
-                <textarea name="description" value={ticket.description} onChange={handleChange} required />
-
-                <label>Priorité :</label>
-                <select name="priority" value={ticket.priority} onChange={handleChange} required>
-                    <option value="basse">Basse</option>
-                    <option value="moyenne">Moyenne</option>
-                    <option value="haute">Haute</option>
-                </select>
-
-                <label>Statut :</label>
-                <select
-                    name="status"
-                    value={ticket.status}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="open">Ouvert</option>
-                    <option value="in_progress">En cours</option>
-                    <option value="closed">Fermé</option>
-                </select>
-
-
-                <button className="button" type="submit">Enregistrer</button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="form-container">
+      <h2>Modifier le ticket</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="title"
+          placeholder="Titre"
+          value={ticket.title}
+          onChange={handleChange}
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={ticket.description}
+          onChange={handleChange}
+          required
+        />
+        <select
+          name="priority"
+          value={ticket.priority}
+          onChange={handleChange}
+          required
+        >
+          <option value="Faible">Faible</option>
+          <option value="Moyenne">Moyenne</option>
+          <option value="Haute">Haute</option>
+        </select>
+        <select
+          name="status"
+          value={ticket.status || 'open'}
+          onChange={handleChange}
+          required
+        >
+          <option value="open">Ouvert</option>
+          <option value="in_progress">En cours</option>
+          <option value="closed">Fermé</option>
+        </select>
+        <button type="submit">Enregistrer</button>
+      </form>
+    </div>
+  );
 };
 
 export default EditTicket;
