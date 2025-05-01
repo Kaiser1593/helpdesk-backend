@@ -7,11 +7,11 @@ const AdminLogin = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === 'admin123') {
+    if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
       localStorage.setItem('isAdmin', 'true');
       navigate('/admin');
     } else {
-      alert("Mot de passe incorrect");
+      alert('Mot de passe incorrect');
     }
   };
 
