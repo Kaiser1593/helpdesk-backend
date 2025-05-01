@@ -28,18 +28,9 @@ const TicketList = () => {
     }
   };
 
-  const formatStatus = (status) => {
-    switch (status) {
-      case 'open': return 'Ouvert';
-      case 'in_progress': return 'En cours';
-      case 'closed': return 'Fermé';
-      default: return '—';
-    }
-  };
-
   return (
     <div className="container">
-      <h1>Liste des Tickets</h1>
+      <h1>Mes Tickets</h1>
       <button className="button" onClick={() => navigate('/create')}>
         + Créer un Ticket
       </button>
@@ -51,8 +42,8 @@ const TicketList = () => {
             <li key={ticket.id} className="ticket">
               <h2>{ticket.title}</h2>
               <p>{ticket.description}</p>
-              <p>Priorité : {ticket.priority.toLowerCase()}</p>
-              <p>Statut : {formatStatus(ticket.status)}</p>
+              <p>Priorité : {ticket.priority}</p>
+              {/* ❌ Aucune ligne Statut */}
               <button className="ticket-button" onClick={() => navigate(`/edit/${ticket.id}`)}>
                 Modifier
               </button>

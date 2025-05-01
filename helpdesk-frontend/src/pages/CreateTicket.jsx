@@ -7,14 +7,12 @@ const CreateTicket = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('Faible');
-  const [status, setStatus] = useState('open'); // valeur par défaut
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Ticket à créer :", { title, description, priority, status });
-      await createTicket({ title, description, priority, status });
+      await createTicket({ title, description, priority }); // pas de statut ici
       navigate('/tickets');
     } catch (err) {
       console.error('Erreur création ticket:', err);
@@ -38,15 +36,14 @@ const CreateTicket = () => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} required>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          required
+        >
           <option value="Faible">Faible</option>
           <option value="Moyenne">Moyenne</option>
           <option value="Haute">Haute</option>
-        </select>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} required>
-          <option value="open">Ouvert</option>
-          <option value="in_progress">En cours</option>
-          <option value="closed">Fermé</option>
         </select>
         <button type="submit">Créer</button>
       </form>

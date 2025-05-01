@@ -2,15 +2,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// ✅ Créer un ticket
+
+// ✅ Créer un ticket (utilisateur)
 router.post('/tickets', (req, res) => {
-    let { title, description, priority, status } = req.body;
+    const { title, description, priority } = req.body;
+    const status = 'open'; // statut toujours forcé à "open"
   
-    if (!status) status = 'open';
-  
-    const validStatuses = ['open', 'in_progress', 'closed'];
-    if (!title || !description || !priority || !validStatuses.includes(status)) {
-      return res.status(400).json({ error: "Champs requis invalides ou manquants" });
+    if (!title || !description || !priority) {
+      return res.status(400).json({ error: "Tous les champs sont requis" });
     }
   
     const query = "INSERT INTO tickets (title, description, priority, status) VALUES (?, ?, ?, ?)";
@@ -18,8 +17,8 @@ router.post('/tickets', (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       res.status(201).json({ id: result.insertId, title, description, priority, status });
     });
-  });  
-  
+  });
+
 
 // ✅ Lire tous les tickets
 router.get('/tickets', (req, res) => {
