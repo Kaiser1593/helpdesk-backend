@@ -51,6 +51,7 @@ Projet full-stack de gestion de tickets d'assistance, permettant à des utilisat
 git clone https://github.com/ton-utilisateur/helpdesk.git
 cd helpdesk
 
+## Lancer la base de données MySQL
 CREATE TABLE tickets (
   id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
@@ -60,6 +61,7 @@ CREATE TABLE tickets (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+## Backend (Express)
 cd helpdesk-backend
 cp .env.example .env
 # Modifier les variables :
@@ -71,6 +73,7 @@ cp .env.example .env
 npm install
 npm start
 
+##Frontend (React)
 cd helpdesk-frontend
 cp .env.example .env
 # VITE_ADMIN_PASSWORD=superadmin
