@@ -1,0 +1,98 @@
+/* 🎨 Fond général */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+    min-height: 100vh;
+  }
+  
+  /* 📦 Container principal */
+  .container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: #ffffffcc; /* blanc léger transparent */
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* 🏷️ Titres */
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  /* 📝 Formulaire */
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  input[type="text"],
+  textarea,
+  select {
+    padding: 12px;
+    border: 2px solid #74ebd5;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  input[type="text"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #ACB6E5;
+    box-shadow: 0px 0px 5px #ACB6E5;
+  }
+  
+  /* 🧨 Boutons */
+  .button, .ticket-button {
+    background: #74ebd5;
+    color: #fff;
+    padding: 12px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.2s;
+  }
+  
+  .button:hover, .ticket-button:hover {
+    background: #57c4b3;
+    transform: scale(1.05);
+  }
+  
+  /* 📜 Liste des tickets */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .ticket {
+    background: #f9f9f9;
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .ticket h2 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .ticket p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
